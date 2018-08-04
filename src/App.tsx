@@ -1,13 +1,16 @@
 import Grid from '@material-ui/core/Grid';
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from '../node_modules/redux';
 import Navbar from './components/navbar';
 import { IState } from './store/reducers';
 
-import logo from './logo.svg';
+import { increment } from './store/actions';
 
 interface IProps {
   message: string;
+  count: number;
+  handleClick: () => void;
 }
 
 class App extends React.Component<IProps> {
@@ -16,13 +19,10 @@ class App extends React.Component<IProps> {
     return (
       <Grid container={true} spacing={24}>
         <Navbar />
-        <Grid item={true} className="App-header" md={6}>
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </Grid>
         <Grid item={true} className="App-intro" md={6}>
-          {this.props.message}
+          {this.props.message} - {this.props.count}
         </Grid>
+        <button onClick={this.props.handleClick}> Click me </button>
       </Grid>
     );
   }
@@ -30,16 +30,29 @@ class App extends React.Component<IProps> {
 
 interface IStateFromProps {
   message: string;
+  count: number;
 }
 
 interface IGlobalState {
   test: IState;
 }
 
-const mapStateToProps = (state: IGlobalState  ): IStateFromProps => {
+interface IStateFromDispatch {
+  handleClick: () => void;
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): IStateFromDispatch => ({
+  handleClick: () => dispatch(increment()),
+});
+
+const mapStateToProps = (state: IGlobalState): IStateFromProps => {
   return {
+    count: state.test.count,
     message: state.test.message,
   };
 };
 
-export default connect(mapStateToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);
