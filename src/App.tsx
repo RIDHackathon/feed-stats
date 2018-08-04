@@ -1,20 +1,14 @@
-import { WithStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { createStyles, withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
+import { connect } from 'react-redux';
 import Navbar from './components/navbar';
+import { IState } from './store/reducers';
 
 import logo from './logo.svg';
 
-const styles = (theme: {}) =>
-  createStyles({
-    header: {
-      backgroundColor: 'red',
-      textAlign: 'center',
-    },
-  });
-
-interface IProps extends WithStyles<typeof styles> {}
+interface IProps {
+  message: string;
+}
 
 class App extends React.Component<IProps> {
   public render() {
@@ -27,11 +21,25 @@ class App extends React.Component<IProps> {
           <h1 className="App-title">Welcome to React</h1>
         </Grid>
         <Grid item={true} className="App-intro" md={6}>
-          To get started, edit <code>src/App.tsx</code> and save to reload.
+          {this.props.message}
         </Grid>
       </Grid>
     );
   }
 }
 
-export default withStyles(styles)(App);
+interface IStateFromProps {
+  message: string;
+}
+
+interface IGlobalState {
+  test: IState;
+}
+
+const mapStateToProps = (state: IGlobalState  ): IStateFromProps => {
+  return {
+    message: state.test.message,
+  };
+};
+
+export default connect(mapStateToProps)(App);
